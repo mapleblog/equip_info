@@ -1,0 +1,42 @@
+{
+  "name": "product-warranty-manager",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "一个现代化的网页版产品信息管理工具，帮助您轻松记录和追踪购买的产品信息及保修状态。",
+  "main": "index.html",
+  "scripts": {
+    "lint": "eslint *.js",
+    "lint:fix": "eslint *.js --fix",
+    "format": "prettier --write *.js *.css *.html",
+    "format:check": "prettier --check *.js *.css *.html",
+    "prepare": "husky",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "product-management",
+    "warranty-tracking",
+    "javascript",
+    "firebase",
+    "frontend"
+  ],
+  "author": "Product Manager",
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,html}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2"
+  }
+}

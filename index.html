@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="智能产品保修管理系统，帮助您管理产品保修信息，避免错过保修期"
+        />
+        <meta name="keywords" content="产品管理,保修管理,产品信息,保修期" />
+        <meta name="author" content="Product Manager" />
+        <title>产品信息记录工具</title>
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+        <link rel="alternate icon" href="assets/favicon.svg" />
+        <link rel="mask-icon" href="assets/favicon.svg" color="#4CAF50" />
+
+        <!-- Preload critical resources -->
+        <link rel="preload" href="src/styles.css" as="style" />
+        <link
+            rel="preload"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            as="style"
+        />
+
+        <link rel="stylesheet" href="src/styles.css" />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+        />
+
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <div class="header-content">
+                    <h1>🛡️ 产品保修管理系统</h1>
+                    <p>智能管理您的产品保修信息，让保修不再错过</p>
+                </div>
+
+                <div class="theme-selector">
+                    <label for="themeSelect">🎨 选择主题</label>
+                    <select
+                        id="themeSelect"
+                        class="theme-select"
+                        aria-label="选择应用主题"
+                    >
+                        <option value="nature">🌿 自然绿色</option>
+                        <option value="purple">💜 优雅紫色</option>
+                        <option value="orange">🧡 活力橙色</option>
+                        <option value="pink">💗 温馨粉色</option>
+                    </select>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- 添加产品表单 -->
+                <section
+                    class="add-product-section"
+                    aria-labelledby="add-product-heading"
+                >
+                    <h2 id="add-product-heading">
+                        <i class="fas fa-plus-circle" aria-hidden="true"></i>
+                        添加新产品
+                    </h2>
+                    <form
+                        id="productForm"
+                        class="product-form"
+                        role="form"
+                        aria-label="添加新产品表单"
+                    >
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="productName">产品名称 *</label>
+                                <input
+                                    type="text"
+                                    id="productName"
+                                    name="productName"
+                                    required
+                                    placeholder="请输入产品的完整名称"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="brand">品牌</label>
+                                <select id="brand" name="brand">
+                                    <option value="">选择品牌</option>
+                                    <option value="Apple">Apple</option>
+                                    <option value="Samsung">Samsung</option>
+                                    <option value="Acer">Acer</option>
+                                    <option value="Huawei">Huawei</option>
+                                    <option value="Xiaomi">Xiaomi</option>
+                                    <option value="Sony">Sony</option>
+                                    <option value="Dell">Dell</option>
+                                    <option value="Lenovo">Lenovo</option>
+                                    <option value="Logitech">Logitech</option>
+                                    <option value="Kingston">Kingston</option>
+                                    <option value="Seagate">Seagate</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="model">型号</label>
+                                <input
+                                    type="text"
+                                    id="model"
+                                    name="model"
+                                    placeholder="型号或规格"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="serialNumber">序列号</label>
+                                <input
+                                    type="text"
+                                    id="serialNumber"
+                                    name="serialNumber"
+                                    placeholder="产品序列号/SN"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="category">分类</label>
+                                <select id="category" name="category">
+                                    <option value="">选择分类</option>
+                                    <option value="电子产品">电子产品</option>
+                                    <option value="家电">家电</option>
+                                    <option value="数码设备">数码设备</option>
+                                    <option value="家具">家具</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="purchaseDate">购买日期 *</label>
+                                <input
+                                    type="date"
+                                    id="purchaseDate"
+                                    name="purchaseDate"
+                                    required
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="warrantyPeriod">保修期（月）</label>
+                                <input
+                                    type="number"
+                                    id="warrantyPeriod"
+                                    name="warrantyPeriod"
+                                    min="0"
+                                    placeholder="12"
+                                />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price">购买价格</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">RM</span>
+                                    <input
+                                        type="number"
+                                        id="price"
+                                        name="price"
+                                        step="0.01"
+                                        min="0"
+                                        class="form-input with-prefix"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="store">购买商店</label>
+                                <select id="store" name="store">
+                                    <option value="">选择商店</option>
+                                    <option value="shopee">Shopee</option>
+                                    <option value="lazada">Lazada</option>
+                                    <option value="harveynorman">
+                                        Harvey Norman
+                                    </option>
+                                    <option value="porpular">Porpular</option>
+                                    <option value="ph&co">Ph&Co</option>
+                                    <option value="bestbuy">BestBuy</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="notes">备注</label>
+                            <textarea
+                                id="notes"
+                                name="notes"
+                                rows="3"
+                                placeholder="产品描述、序列号等其他信息..."
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 保存产品
+                        </button>
+                    </form>
+                </section>
+
+                <!-- 搜索和筛选 -->
+                <section
+                    class="search-section"
+                    aria-labelledby="search-heading"
+                >
+                    <h2 id="search-heading" class="sr-only">搜索和筛选产品</h2>
+                    <div class="search-controls" role="search">
+                        <div class="search-box">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="搜索产品名称、品牌或型号..."
+                                aria-label="搜索产品"
+                            />
+                        </div>
+
+                        <div class="filter-controls">
+                            <label for="categoryFilter" class="sr-only"
+                                >按分类筛选</label
+                            >
+                            <select
+                                id="categoryFilter"
+                                aria-label="按分类筛选产品"
+                            >
+                                <option value="">所有分类</option>
+                                <option value="电子产品">电子产品</option>
+                                <option value="家电">家电</option>
+                                <option value="数码设备">数码设备</option>
+                                <option value="家具">家具</option>
+                                <option value="其他">其他</option>
+                            </select>
+
+                            <label for="warrantyFilter" class="sr-only"
+                                >按保修状态筛选</label
+                            >
+                            <select
+                                id="warrantyFilter"
+                                aria-label="按保修状态筛选产品"
+                            >
+                                <option value="">所有保修状态</option>
+                                <option value="valid">保修有效</option>
+                                <option value="expired">保修过期</option>
+                                <option value="expiring">即将过期</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 产品列表 -->
+                <section
+                    id="main-content"
+                    class="products-section"
+                    aria-labelledby="products-heading"
+                >
+                    <div class="section-header">
+                        <h2 id="products-heading">
+                            <i class="fas fa-list" aria-hidden="true"></i>
+                            产品列表
+                        </h2>
+                        <div class="header-actions">
+                            <div class="stats">
+                                <span id="totalProducts">总计: 0 件产品</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button
+                                    id="exportBtn"
+                                    class="btn btn-outline"
+                                    title="导出数据"
+                                >
+                                    <i class="fas fa-download"></i> 导出
+                                </button>
+                                <button
+                                    id="importBtn"
+                                    class="btn btn-outline"
+                                    title="导入数据"
+                                    onclick="document.getElementById('importFile').click()"
+                                >
+                                    <i class="fas fa-upload"></i> 导入
+                                </button>
+                                <button
+                                    id="clearDataBtn"
+                                    class="btn btn-danger"
+                                    title="清空所有数据"
+                                >
+                                    <i class="fas fa-trash-alt"></i> 清空数据
+                                </button>
+                            </div>
+                        </div>
+                        <input
+                            type="file"
+                            id="importFile"
+                            accept=".json"
+                            style="display: none"
+                        />
+                    </div>
+
+                    <div
+                        id="productsList"
+                        class="products-grid"
+                        role="grid"
+                        aria-label="产品信息网格"
+                    >
+                        <!-- 产品卡片将通过JavaScript动态生成 -->
+                    </div>
+
+                    <div
+                        id="emptyState"
+                        class="empty-state"
+                        style="display: none"
+                    >
+                        <i class="fas fa-box-open"></i>
+                        <h3>暂无产品记录</h3>
+                        <p>点击上方"添加新产品"开始记录您的产品信息</p>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- 编辑产品模态框 -->
+        <div
+            id="editModal"
+            class="modal"
+            role="dialog"
+            aria-labelledby="edit-modal-title"
+            aria-hidden="true"
+        >
+            <div class="modal-content edit-modal">
+                <div class="modal-header">
+                    <div class="modal-title-section">
+                        <h3 id="edit-modal-title">
+                            <i class="fas fa-edit"></i> 编辑产品信息
+                        </h3>
+                        <p class="modal-subtitle">
+                            修改产品的详细信息和保修状态
+                        </p>
+                    </div>
+                    <button
+                        class="close-btn"
+                        onclick="closeEditModal()"
+                        title="关闭窗口"
+                        aria-label="关闭编辑对话框"
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form
+                        id="editProductForm"
+                        class="product-form enhanced-form"
+                        role="form"
+                        aria-label="编辑产品信息表单"
+                    >
+                        <input type="hidden" id="editProductId" />
+
+                        <!-- 基本信息区域 -->
+                        <div class="form-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-info-circle"></i> 基本信息
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="editProductName"
+                                        >产品名称 *</label
+                                    >
+                                    <input
+                                        type="text"
+                                        id="editProductName"
+                                        required
+                                        class="form-input"
+                                    />
+                                    <div class="field-hint">
+                                        请输入完整的产品名称
+                                    </div>
+                                    <div
+                                        class="error-message"
+                                        id="editProductNameError"
+                                    ></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editBrand">品牌</label>
+                                    <select id="editBrand" class="form-select">
+                                        <option value="">选择品牌</option>
+                                        <option value="Apple">Apple</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Acer">Acer</option>
+                                        <option value="Huawei">Huawei</option>
+                                        <option value="Xiaomi">Xiaomi</option>
+                                        <option value="Sony">Sony</option>
+                                        <option value="Dell">Dell</option>
+                                        <option value="Lenovo">Lenovo</option>
+                                        <option value="Logitech">
+                                            Logitech
+                                        </option>
+                                        <option value="Kingston">
+                                            Kingston
+                                        </option>
+                                        <option value="Seagate">Seagate</option>
+                                    </select>
+                                    <div class="field-hint">选择品牌名称</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editModel">型号</label>
+                                    <input
+                                        type="text"
+                                        id="editModel"
+                                        class="form-input"
+                                    />
+                                    <div class="field-hint">产品的具体型号</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editSerialNumber">序列号</label>
+                                    <input
+                                        type="text"
+                                        id="editSerialNumber"
+                                        class="form-input"
+                                        placeholder="产品序列号/SN"
+                                    />
+                                    <div class="field-hint">
+                                        产品的唯一序列号标识
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editCategory">分类</label>
+                                    <select
+                                        id="editCategory"
+                                        class="form-select"
+                                    >
+                                        <option value="">选择分类</option>
+                                        <option value="电子产品">
+                                            📱 电子产品
+                                        </option>
+                                        <option value="家电">🏠 家电</option>
+                                        <option value="数码设备">
+                                            💻 数码设备
+                                        </option>
+                                        <option value="家具">🪑 家具</option>
+                                        <option value="服装">👕 服装</option>
+                                        <option value="运动器材">
+                                            ⚽ 运动器材
+                                        </option>
+                                        <option value="其他">📦 其他</option>
+                                    </select>
+                                    <div class="field-hint">
+                                        选择产品所属分类
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 购买信息区域 -->
+                        <div class="form-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-shopping-cart"></i> 购买信息
+                            </h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="editPurchaseDate"
+                                        >购买日期 *</label
+                                    >
+                                    <input
+                                        type="date"
+                                        id="editPurchaseDate"
+                                        required
+                                        class="form-input"
+                                    />
+                                    <div class="field-hint">
+                                        选择产品购买日期
+                                    </div>
+                                    <div
+                                        class="error-message"
+                                        id="editPurchaseDateError"
+                                    ></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editPrice">购买价格</label>
+                                    <div class="input-with-prefix">
+                                        <span class="input-prefix">RM</span>
+                                        <input
+                                            type="number"
+                                            id="editPrice"
+                                            step="0.01"
+                                            min="0"
+                                            class="form-input with-prefix"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                    <div class="field-hint">
+                                        输入购买时的价格
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="editStore">购买商店</label>
+                                    <select id="editStore" class="form-select">
+                                        <option value="">选择商店</option>
+                                        <option value="京东">京东</option>
+                                        <option value="天猫">天猫</option>
+                                        <option value="淘宝">淘宝</option>
+                                        <option value="苏宁易购">
+                                            苏宁易购
+                                        </option>
+                                        <option value="国美">国美</option>
+                                        <option value="线下实体店">
+                                            线下实体店
+                                        </option>
+                                    </select>
+                                    <div class="field-hint">
+                                        购买的商店或平台
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 保修信息区域 -->
+                        <div class="form-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-shield-alt"></i> 保修信息
+                            </h4>
+                            <div class="warranty-section">
+                                <div class="form-group">
+                                    <label for="editWarrantyPeriod"
+                                        >保修期（月）</label
+                                    >
+                                    <div class="warranty-input-group">
+                                        <input
+                                            type="number"
+                                            id="editWarrantyPeriod"
+                                            min="0"
+                                            max="120"
+                                            class="form-input"
+                                            placeholder="12"
+                                        />
+                                        <div class="warranty-presets">
+                                            <button
+                                                type="button"
+                                                class="preset-btn"
+                                                onclick="setWarrantyPeriod(12)"
+                                            >
+                                                1年
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="preset-btn"
+                                                onclick="setWarrantyPeriod(24)"
+                                            >
+                                                2年
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="preset-btn"
+                                                onclick="setWarrantyPeriod(36)"
+                                            >
+                                                3年
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="field-hint">
+                                        设置产品保修期限
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="warranty-info"
+                                    id="editWarrantyInfo"
+                                >
+                                    <!-- 保修信息将通过JavaScript动态显示 -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 备注区域 -->
+                        <div class="form-section">
+                            <h4 class="section-title">
+                                <i class="fas fa-sticky-note"></i> 备注信息
+                            </h4>
+                            <div class="form-group full-width">
+                                <label for="editNotes">备注</label>
+                                <textarea
+                                    id="editNotes"
+                                    rows="4"
+                                    class="form-textarea"
+                                    placeholder="记录产品的序列号、特殊说明、维修记录等信息..."
+                                ></textarea>
+                                <div class="field-hint">
+                                    可选：添加产品的额外信息
+                                </div>
+                                <div class="char-counter">
+                                    <span id="editNotesCounter">0</span>/500
+                                    字符
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onclick="closeEditModal()"
+                    >
+                        <i class="fas fa-times"></i> 取消
+                    </button>
+                    <button
+                        type="submit"
+                        form="editProductForm"
+                        class="btn btn-primary"
+                    >
+                        <i class="fas fa-save"></i> 保存更改
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 删除确认模态框 -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content delete-modal">
+                <div class="modal-header delete-header">
+                    <div class="delete-header-content">
+                        <div class="warning-icon-container">
+                            <div class="warning-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+                        <div class="modal-title-section">
+                            <h3>确认删除</h3>
+                            <p class="modal-subtitle">
+                                此操作将永久删除产品记录
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body delete-body">
+                    <div class="delete-warning">
+                        <div class="warning-content">
+                            <h4>您即将删除此产品记录</h4>
+                            <p class="warning-text">
+                                删除后将无法恢复产品的所有信息，包括：
+                            </p>
+                            <ul class="warning-list">
+                                <li>
+                                    <i class="fas fa-info-circle"></i>
+                                    产品基本信息
+                                </li>
+                                <li>
+                                    <i class="fas fa-calendar-alt"></i>
+                                    购买和保修记录
+                                </li>
+                                <li>
+                                    <i class="fas fa-sticky-note"></i>
+                                    备注和附加信息
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="confirmation-note">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>请确认您真的要执行此操作</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions delete-actions">
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-cancel"
+                        onclick="closeDeleteModal()"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        <span>取消</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-delete"
+                        onclick="confirmDelete()"
+                    >
+                        <i class="fas fa-trash-alt"></i>
+                        <span>确认删除</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Firebase配置和初始化 -->
+        <script src="src/firebase-config.js"></script>
+        <script src="src/script.js"></script>
+    </body>
+</html>

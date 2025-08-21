@@ -1,0 +1,18 @@
+{
+  "rules": {
+    "users": {
+      "default-user": {
+        // 允许所有人读取
+        ".read": "true",
+        // 允许所有人写入
+        ".write": "true"
+      }
+    },
+    "products": {
+      // 允许所有人读取产品数据
+      ".read": "true",
+      // 允许所有人写入产品数据
+      ".write": "true"
+    }
+  }
+}
