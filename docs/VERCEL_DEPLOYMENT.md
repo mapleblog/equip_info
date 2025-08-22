@@ -54,6 +54,44 @@
 
 ### 错误3：headers 中的正则表达式语法错误
 
+**错误信息**：`Header at index 0 has invalid 'source' pattern`
+
+**原因**：复杂的正则表达式语法导致 Vercel 无法正确解析
+
+**解决方案**：
+1. 避免使用复杂的正则表达式模式
+2. 使用简单的路径匹配代替文件扩展名匹配
+3. 分别为不同目录设置缓存规则
+
+**正确的配置示例**：
+```json
+"headers": [
+  {
+    "source": "/src/(.*)",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=31536000, immutable"
+      }
+    ]
+  },
+  {
+    "source": "/assets/(.*)",
+    "headers": [
+      {
+        "key": "Cache-Control",
+        "value": "public, max-age=31536000, immutable"
+      }
+    ]
+  }
+]
+```
+
+**避免的错误模式**：
+- `"/(.*)\\.(?:js|css|svg)$"` - 复杂的文件扩展名匹配
+- `"/(.*\\.(js|css|svg))"` - 转义字符问题
+- 使用捕获组和复杂的正则表达式语法
+
 **错误信息**："Header at index 0 has invalid 'source' pattern"
 
 **解决方案**：
