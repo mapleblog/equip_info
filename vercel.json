@@ -3,23 +3,11 @@
   "name": "product-warranty-manager",
   "builds": [
     {
-      "src": "index.html",
+      "src": "**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/src/(.*)",
-      "dest": "/src/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/config/(.*)",
-      "dest": "/config/$1"
-    },
     {
       "src": "/(.*\\.(js|css|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot))",
       "dest": "/$1",
@@ -55,22 +43,6 @@
       ]
     }
   ],
-  "env": {
-    "VITE_FIREBASE_API_KEY": "@vite_firebase_api_key",
-    "VITE_FIREBASE_AUTH_DOMAIN": "@vite_firebase_auth_domain",
-    "VITE_FIREBASE_DATABASE_URL": "@vite_firebase_database_url",
-    "VITE_FIREBASE_PROJECT_ID": "@vite_firebase_project_id",
-    "VITE_FIREBASE_STORAGE_BUCKET": "@vite_firebase_storage_bucket",
-    "VITE_FIREBASE_MESSAGING_SENDER_ID": "@vite_firebase_messaging_sender_id",
-    "VITE_FIREBASE_APP_ID": "@vite_firebase_app_id",
-    "VITE_FIREBASE_MEASUREMENT_ID": "@vite_firebase_measurement_id"
-  },
-  "functions": {
-    "src/firebase-config.js": {
-      "memory": 128,
-      "maxDuration": 10
-    }
-  },
   "cleanUrls": true,
   "trailingSlash": false
 }
