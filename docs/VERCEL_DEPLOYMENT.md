@@ -28,7 +28,7 @@
 
 ## ⚠️ 常见部署错误
 
-### 错误："The 'functions' property cannot be used in conjunction with the 'builds' property"
+### 错误1："The 'functions' property cannot be used in conjunction with the 'builds' property"
 
 **原因**：在 `vercel.json` 中同时使用了 `functions` 和 `builds` 属性。对于静态网站，应该只使用 `builds` 属性。
 
@@ -36,6 +36,21 @@
 1. 移除 `vercel.json` 中的 `functions` 属性
 2. 使用 `builds` 配置静态文件构建
 3. 简化路由配置，只保留必要的规则
+
+### 错误2：routes 和其他属性冲突
+
+**错误信息**：`If 'rewrites', 'redirects', 'headers', 'cleanUrls' or 'trailingSlash' are used, then 'routes' cannot be present`
+
+**解决方案**：
+- 移除 `routes` 属性
+- 使用 `rewrites` 替代 `routes` 处理SPA路由
+- 将缓存策略移到 `headers` 配置中
+- 保留 `headers`、`cleanUrls`、`trailingSlash` 配置
+
+**routes vs rewrites 区别**：
+- `routes`：旧版本的路由配置方式
+- `rewrites`：新版本推荐的重写规则
+- 不能同时使用 `routes` 和现代配置属性
 
 **正确的 vercel.json 配置示例**：
 ```json
