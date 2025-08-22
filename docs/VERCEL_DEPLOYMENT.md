@@ -52,6 +52,31 @@
 - `rewrites`：新版本推荐的重写规则
 - 不能同时使用 `routes` 和现代配置属性
 
+### 错误3：headers 中的正则表达式语法错误
+
+**错误信息**："Header at index 0 has invalid 'source' pattern"
+
+**解决方案**：
+- 修正正则表达式语法，避免复杂的转义字符
+- 使用非捕获组 `(?:)` 而不是捕获组 `()`
+- 在文件扩展名匹配中使用 `$` 结束符
+- 正确的模式：`"/(.*)\\.(?:js|css|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot)$"`
+
+**Vercel 正则表达式最佳实践**：
+```json
+// ✅ 正确：简单的文件扩展名匹配
+"source": "/(.*)\\.(?:js|css|svg)$"
+
+// ❌ 错误：复杂的转义字符
+"source": "/(.*\\.(js|css|svg))"
+
+// ✅ 正确：匹配所有路径
+"source": "/(.*)"
+
+// ✅ 正确：匹配特定目录
+"source": "/api/(.*)"
+```
+
 **正确的 vercel.json 配置示例**：
 ```json
 {
