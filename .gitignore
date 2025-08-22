@@ -109,3 +109,27 @@ firebase-debug.log
 
 # Husky
 .husky/_
+
+# Vercel
+.vercel
+.vercel/
+*.vercel
+vercel.json.backup
+
+# Environment variables (production)
+.env.production
+.env.staging
+
+# Build outputs
+build/
+dist/
+out/
+
+# Static site generators
+_site/
+public/
+
+# Backup files
+*.backup
+*.bak
+*.orig
